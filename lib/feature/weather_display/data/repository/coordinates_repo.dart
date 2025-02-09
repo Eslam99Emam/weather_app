@@ -1,10 +1,11 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/feature/weather_display/domain/entity/coordinates_entity.dart';
 
 import '../../domain/repository/coordinates_repo.dart';
 
 class CoordinatesRepositoryIMPL extends CoordinatesRepository {
-  // check the location access
-  Future<bool?> accesslocation() async {
+  @override
+  Future<bool> accesslocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -29,8 +30,10 @@ class CoordinatesRepositoryIMPL extends CoordinatesRepository {
   }
 
   // get coordinates
-  Future<Position?> getcoordinates() async {
-    var coordinates = await Geolocator.getCurrentPosition();
+  Future<Coordinates> getcoordinates() async {
+    Position position = await Geolocator.getCurrentPosition();
+    Coordinates coordinates =
+        Coordinates(lat: position.latitude, lon: position.longitude);
     return coordinates;
   }
 }

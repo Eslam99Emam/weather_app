@@ -1,9 +1,9 @@
 
-import 'package:geolocator/geolocator.dart';
+import 'package:weather_app/feature/weather_display/domain/entity/coordinates_entity.dart';
 
 abstract class CoordinatesRepository {
   // check the location access
-  Future<bool?> accesslocation();
+  Future<bool> accesslocation();
   // get coordinates
-  Future<Position?> getcoordinates();
+  Future<Coordinates> getcoordinates();
 }
