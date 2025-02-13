@@ -6,6 +6,7 @@ import 'package:weather_app/feature/weather_display/domain/usecases/get_weather.
 import 'package:weather_app/feature/weather_display/presentation/providers/weather_Providers.dart';
 
 import '../../domain/entity/location_entity.dart';
+import 'Weather_Providing_Notifiers.dart';
 
 class WeatherNotifierParams {
   Location location;
@@ -21,6 +22,7 @@ class WeatherNotifier
     GetWeather usecase = ref.read(weatherUsecaseProvider);
     Weather weather =
         await usecase(params.location, params.date ?? DateTime.now());
+    ref.read(weatherProvidingNotifier.notifier).updateWeather(weather);
     return weather;
   }
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:weather_app/feature/weather_display/presentation/providers/Location_Providing_Notifiers.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/coordinates_Providers.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/location_Notifier.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/location_Providers.dart';
@@ -10,20 +12,24 @@ import 'package:weather_app/feature/weather_display/presentation/providers/weath
 import '../../domain/entity/coordinates_entity.dart';
 import '../../domain/entity/location_entity.dart';
 import '../../domain/entity/weather_entity.dart';
+import 'Coordinates_Providing_Notifiers.dart';
 
-class InitProvider extends AsyncNotifier<(Weather, Location)> {
+class InitProvider extends FamilyAsyncNotifier<(Weather, Location), String?> {
   @override
-  FutureOr<(Weather, Location)> build() async {
-    Coordinates coordinates = await ref.watch(coordinatesProvider.future);
-    Location location = await ref
-        .watch(locationProvider(LocationNotifierParams(coordinates)).future);
-    Weather weather = await ref
-        .watch(weatherProvider(WeatherNotifierParams(location)).future);
+  FutureOr<(Weather, Location)> build(String? country) async {
+    log("InitProvider");
+    Coordinates coordinates = await ref.read(coordinatesProvider.future);
+    Location location = await ref.read(locationProvider(
+            LocationNotifierParams(ref.read(coordinatesProvidingNotifier)!, country))
+        .future);
+    Weather weather = await ref.read(weatherProvider(
+            WeatherNotifierParams(ref.read(locationProvidingNotifier)!))
+        .future);
     return (weather, location);
   }
 }
 
 final initNotifierProvider =
-    AsyncNotifierProvider<InitProvider, (Weather, Location)>(
+    AsyncNotifierProvider.family<InitProvider, (Weather, Location), String?>(
   InitProvider.new,
 );

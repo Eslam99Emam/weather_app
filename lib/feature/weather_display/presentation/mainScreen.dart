@@ -3,6 +3,9 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:weather_app/feature/weather_display/presentation/providers/Coordinates_Providing_Notifiers.dart';
+import 'package:weather_app/feature/weather_display/presentation/providers/location_Notifier.dart';
+import 'package:weather_app/feature/weather_display/presentation/providers/location_Providers.dart';
 
 import 'providers/init_Provider.dart';
 import 'screens/errorScreen.dart';
@@ -19,34 +22,35 @@ class Mainscreen extends ConsumerStatefulWidget {
 class _MainscreenState extends ConsumerState<Mainscreen> {
   @override
   Widget build(BuildContext context) {
-    final init = ref.watch(initNotifierProvider);
+    final init = ref.watch(initNotifierProvider(null));
+    return Scaffold(
+      body: PageTransitionSwitcher(
+        duration: Duration(milliseconds: 500),
+        transitionBuilder: (child, animation, secondaryAnimation) {
+          const begin = Offset(1.0, 0.0); // Slide in from the right
+          const end = Offset.zero; // End at the center
+          const curve = Curves.easeInOut;
 
-    return PageTransitionSwitcher(
-      duration: Duration(milliseconds: 500),
-      transitionBuilder: (child, animation, secondaryAnimation) {
-        const begin = Offset(1.0, 0.0); // Slide in from the right
-        const end = Offset.zero; // End at the center
-        const curve = Curves.easeInOut;
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
 
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-        var offsetAnimation = animation.drive(tween);
-
-        return SlideTransition(
-          position: offsetAnimation,
-          child: child,
-        );
-      },
-      child: init.when(
-        loading: () {
-          return LoadingScreen();
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
         },
-        error: (error, stackTrace) {
-          return Errorscreen();
-        },
-        data: (value) {
-          return Weatherscreen();
-        },
+        child: init.when(
+          loading: () {
+            return LoadingScreen();
+          },
+          error: (error, stackTrace) {
+            return Errorscreen();
+          },
+          data: (value) {
+            return Weatherscreen();
+          },
+        ),
       ),
     );
   }

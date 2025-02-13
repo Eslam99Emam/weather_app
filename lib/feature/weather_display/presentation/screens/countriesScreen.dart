@@ -11,7 +11,7 @@ class CountriesScreen extends StatefulWidget {
 }
 
 class _CountriesscreeSState extends State<CountriesScreen> {
-  List<Country>? _countries;
+  List<Country> _countries = [];
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class _CountriesscreeSState extends State<CountriesScreen> {
         return Scaffold(
           backgroundColor: Colors.lightBlue.shade200,
           body: ListView.builder(
-            itemCount: _countries!.length,
+            itemCount: _countries.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
@@ -39,7 +39,7 @@ class _CountriesscreeSState extends State<CountriesScreen> {
                         padding: const EdgeInsets.all(4.0),
                         child: ListTile(
                           title: Text(
-                              "${_countries![index].name} ${_countries![index].flag}"),
+                              "${_countries[index].name} ${_countries[index].flag}"),
                         ),
                       ),
                     ),
