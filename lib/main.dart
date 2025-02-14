@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:country_state_city/country_state_city.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather_app/feature/weather_display/presentation/mainScreen.dart';

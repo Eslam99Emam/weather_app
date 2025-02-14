@@ -24,7 +24,7 @@ class WeatherCloudDataSource {
         throw Exception("${response.statusCode} ${response.statusMessage}");
       }
     } catch (e) {
-      throw Exception("Error fetching weather data");
+      throw Exception("Error fetching weather data $e");
     }
   }
 }

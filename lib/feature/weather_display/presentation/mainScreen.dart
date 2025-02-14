@@ -3,9 +3,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app/feature/weather_display/presentation/providers/Coordinates_Providing_Notifiers.dart';
-import 'package:weather_app/feature/weather_display/presentation/providers/location_Notifier.dart';
-import 'package:weather_app/feature/weather_display/presentation/providers/location_Providers.dart';
 
 import 'providers/init_Provider.dart';
 import 'screens/errorScreen.dart';
@@ -27,8 +24,8 @@ class _MainscreenState extends ConsumerState<Mainscreen> {
       body: PageTransitionSwitcher(
         duration: Duration(milliseconds: 500),
         transitionBuilder: (child, animation, secondaryAnimation) {
-          const begin = Offset(1.0, 0.0); // Slide in from the right
-          const end = Offset.zero; // End at the center
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
           const curve = Curves.easeInOut;
 
           var tween =
@@ -45,7 +42,7 @@ class _MainscreenState extends ConsumerState<Mainscreen> {
             return LoadingScreen();
           },
           error: (error, stackTrace) {
-            return Errorscreen();
+            return Errorscreen(error: error, stackTrace: stackTrace,);
           },
           data: (value) {
             return WeatherScreen();

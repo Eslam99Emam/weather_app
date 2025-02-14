@@ -57,7 +57,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
 
     return Scaffold(
       key: ValueKey("done"),
-      backgroundColor: Colors.lightBlue.shade300,
+      backgroundColor: Color(0xFF91dde3),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(700),
         child: Container(
@@ -67,6 +67,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
               Navigator.push(
                 context,
                 PageRouteBuilder(
+                  transitionDuration: Duration(seconds: 1),
                   pageBuilder: (context, animation, secondaryAnimation) =>
                       CountriesScreen(),
                   transitionsBuilder:
@@ -79,9 +80,12 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                         .chain(CurveTween(curve: curve));
                     var offsetAnimation = animation.drive(tween);
 
-                    return SlideTransition(
-                      position: offsetAnimation,
-                      child: child,
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: offsetAnimation,
+                        child: child,
+                      ),
                     );
                   },
                 ),
@@ -140,19 +144,11 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                     Text(
                       "${weather.tempreture}°C",
                       style: Theme.of(context).textTheme.displayLarge!.apply(
-                        color: Theme.of(context)
-                            .textTheme
-                            .displayLarge!
-                            .color!
-                            .withAlpha(150),
+                        color: const Color(0xFFf8c907),
                         shadows: [
                           Shadow(
-                            color: Theme.of(context)
-                                .textTheme
-                                .displayLarge!
-                                .color!
-                                .withAlpha(150),
-                            blurRadius: 8.0,
+                            color: Color(0xFF000000),
+                            blurRadius: 4.0,
                           ),
                         ],
                       ),
@@ -191,26 +187,27 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                 ),
                 Expanded(child: SizedBox()),
                 SizedBox(
-                  height: 145,
-                  child: ListView.separated(
+                  height: 170,
+                  child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: weather.day.length,
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        width: 20,
-                      );
-                    },
                     itemBuilder: (context, index) {
                       return Container(
+                        margin: EdgeInsets.all(12.0),
                         padding: EdgeInsets.symmetric(
                             vertical: 4.0, horizontal: 16.0),
                         decoration: BoxDecoration(
-                            color: Colors.grey.withAlpha(100),
+                            // color: Colors.grey.withAlpha(100),
+                            gradient: RadialGradient(colors: [
+                              Color(0xAAcff0f3),
+                              Color(0xFF40c4ce),
+                            ]),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                  color: Colors.grey.withAlpha(80),
-                                  blurRadius: 12.0)
+                                color: Colors.white.withAlpha(100),
+                                blurRadius: 12.0,
+                              )
                             ]),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,7 +247,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                   ),
                 ),
                 SizedBox(
-                  height: 50,
+                  height: 20,
                 )
               ],
             ),
