@@ -6,7 +6,7 @@ import '../../domain/repository/location_repo.dart';
 class LocationRepositoryIMPL extends LocationRepository {
   // when we use the search for a country
   Future<Location> getLocationbyname(String name) async {
-    return Location(location: Placemark(country: name));
+    return Location(location: Placemark(country: name, ));
   }
 
   // when we use our location

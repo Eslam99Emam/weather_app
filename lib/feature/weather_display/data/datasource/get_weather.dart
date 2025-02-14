@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:intl/intl.dart';
 
 import 'package:dio/dio.dart';
 
@@ -14,7 +14,7 @@ class WeatherCloudDataSource {
   Future<Weather> fetchWeather(Location loc, DateTime date) async {
     String key = "cf8b21501f92414f86611357250802";
     String url =
-        "http://api.weatherapi.com/v1/forecast.json?key=cf8b21501f92414f86611357250802&q=${loc.location.country}&days=1&aqi=no&alerts=no";
+        "http://api.weatherapi.com/v1/forecast.json?key=${key}&q=${loc.location.country}&dt=${DateFormat('yyyy-MM-dd').format(date)}";
 
     try {
       final response = await dio.get(url);

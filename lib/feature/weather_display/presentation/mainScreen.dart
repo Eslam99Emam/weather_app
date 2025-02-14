@@ -48,7 +48,7 @@ class _MainscreenState extends ConsumerState<Mainscreen> {
             return Errorscreen();
           },
           data: (value) {
-            return Weatherscreen();
+            return WeatherScreen();
           },
         ),
       ),

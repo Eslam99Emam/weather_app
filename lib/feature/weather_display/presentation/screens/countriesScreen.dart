@@ -2,15 +2,17 @@
 
 import 'package:country_state_city/country_state_city.dart' hide State;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:weather_app/feature/weather_display/presentation/providers/init_Provider.dart';
 
-class CountriesScreen extends StatefulWidget {
+class CountriesScreen extends ConsumerStatefulWidget {
   const CountriesScreen({super.key});
 
   @override
-  State<CountriesScreen> createState() => _CountriesscreeSState();
+  ConsumerState<CountriesScreen> createState() => _CountriesscreeSState();
 }
 
-class _CountriesscreeSState extends State<CountriesScreen> {
+class _CountriesscreeSState extends ConsumerState<CountriesScreen> {
   List<Country> _countries = [];
 
   @override
@@ -18,43 +20,62 @@ class _CountriesscreeSState extends State<CountriesScreen> {
     return FutureBuilder(
       future: countries(),
       builder: (context, snapshot) {
-        return Scaffold(
-          backgroundColor: Colors.lightBlue.shade200,
-          body: ListView.builder(
-            itemCount: _countries.length,
-            itemBuilder: (context, index) {
-              return Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(
-                          width: 0.3,
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            backgroundColor: Colors.lightBlue.shade200,
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          return Scaffold(
+            backgroundColor: Colors.lightBlue.shade200,
+            body: ListView.builder(
+              itemCount: _countries.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(
+                            width: 0.3,
+                          ),
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () async {
+                          await ref
+                              .read(initNotifierProvider(
+                                      "${_countries[index].name}")
+                                  .future)
+                              .whenComplete(
+                            () {
+                              Navigator.pop(context);
+                            },
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ListTile(
+                            title: Text(
+                                "${_countries[index].name} ${_countries[index].flag}"),
+                          ),
                         ),
                       ),
                     ),
-                    child: InkWell(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: ListTile(
-                          title: Text(
-                              "${_countries[index].name} ${_countries[index].flag}"),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Divider(
-                  //   color: Colors.grey.shade500,
-                  //   thickness: 0.5,
-                  //   indent: 0,
-                  //   endIndent: 0,
-                  // ),
-                ],
-              );
-            },
-          ),
-        );
+                    // Divider(
+                    //   color: Colors.grey.shade500,
+                    //   thickness: 0.5,
+                    //   indent: 0,
+                    //   endIndent: 0,
+                    // ),
+                  ],
+                );
+              },
+            ),
+          );
+        }
       },
     );
   }

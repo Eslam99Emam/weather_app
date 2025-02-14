@@ -1,61 +1,118 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/Location_Providing_Notifiers.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/Weather_Providing_Notifiers.dart';
-import 'package:weather_app/feature/weather_display/presentation/providers/init_Provider.dart';
+import 'package:weather_app/feature/weather_display/presentation/screens/countriesScreen.dart';
 
-import '../providers/Coordinates_Providing_Notifiers.dart';
-import '../providers/location_Notifier.dart';
-import '../providers/location_Providers.dart';
-
-class Weatherscreen extends ConsumerWidget {
-  const Weatherscreen({super.key});
+class WeatherScreen extends ConsumerStatefulWidget {
+  const WeatherScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends ConsumerState<WeatherScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1000),
+    )..repeat(reverse: true);
+
+    _scaleAnimation = Tween<double>(begin: 1.2, end: 1.5).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     log("Weather Screen");
     var location = ref.watch(locationProvidingNotifier);
     log("${location!.location.country}");
     var weather = ref.watch(weatherProvidingNotifier);
     log("${weather!.tempreture} ${weather.image}");
+
+    String format_date(String date) {
+      int hour = int.parse(date.split(":")[0]);
+      int formated = (hour % 12) + 1;
+      return "${formated.toString().padLeft(2, "0")}:00${hour / 12 <= 1 ? "ₐₘ" : "ₚₘ"}";
+    }
+
     return Scaffold(
       key: ValueKey("done"),
       backgroundColor: Colors.lightBlue.shade300,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(700),
-        child: GestureDetector(
-          onTap: () {},
-          child: Container(
-            color: Colors.amber,
+        child: Container(
+          // color: Colors.amber,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      CountriesScreen(),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    const begin = Offset(0.0, -1.0); // Slide in from the right
+                    const end = Offset.zero; // End at the center
+                    const curve = Curves.easeInOut;
+
+                    var tween = Tween(begin: begin, end: end)
+                        .chain(CurveTween(curve: curve));
+                    var offsetAnimation = animation.drive(tween);
+
+                    return SlideTransition(
+                      position: offsetAnimation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            },
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [],
-                    ),
-                  ),
+                  Expanded(child: SizedBox()),
                   Text(
                     "${location.location.country}",
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                  Icon(Icons.arrow_drop_down),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.sunny,
-                          ),
+                    style: Theme.of(context).textTheme.headlineLarge!.apply(
+                      shadows: [
+                        Shadow(
+                          blurRadius: 2.0,
                         ),
                       ],
                     ),
+                  ),
+                  Icon(
+                    Icons.arrow_drop_down,
+                    size: 36,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 2.0,
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: SizedBox(),
                   ),
                 ],
               ),
@@ -64,14 +121,138 @@ class Weatherscreen extends ConsumerWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 12.0),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+        child: Stack(
           children: [
-            Text(
-              "${location.location.country}",
-              style: Theme.of(context).textTheme.displaySmall,
+            Positioned(
+              child: Lottie.asset("assets/Background.json",
+                  height: 400, width: 400),
+              top: 140,
+              left: 40,
+            ),
+            Column(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      "${weather.tempreture}°C",
+                      style: Theme.of(context).textTheme.displayLarge!.apply(
+                        color: Theme.of(context)
+                            .textTheme
+                            .displayLarge!
+                            .color!
+                            .withAlpha(150),
+                        shadows: [
+                          Shadow(
+                            color: Theme.of(context)
+                                .textTheme
+                                .displayLarge!
+                                .color!
+                                .withAlpha(150),
+                            blurRadius: 8.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0),
+                      child: Text(
+                        "Today avg in ${location.location.country}",
+                        style: Theme.of(context).textTheme.titleLarge!.apply(
+                          shadows: [
+                            Shadow(
+                              blurRadius: 3.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: ScaleTransition(
+                            scale: _scaleAnimation,
+                            child: Image.network(
+                              "https:${weather.image}",
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Expanded(child: SizedBox()),
+                SizedBox(
+                  height: 145,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: weather.day.length,
+                    separatorBuilder: (context, index) {
+                      return SizedBox(
+                        width: 20,
+                      );
+                    },
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 16.0),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withAlpha(100),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withAlpha(80),
+                                  blurRadius: 12.0)
+                            ]),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              format_date((weather.day[index]["time"] as String)
+                                  .split(" ")[1]),
+                              style:
+                                  Theme.of(context).textTheme.bodyLarge!.apply(
+                                        fontSizeDelta: 2,
+                                        fontWeightDelta: 1,
+                                        color: Colors.black,
+                                      ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "${weather.day[index]["temp_c"]}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .apply(
+                                    fontSizeDelta: 3,
+                                    fontWeightDelta: 1,
+                                    color: Colors.black,
+                                  ),
+                            ),
+                            Image.network(
+                              "https:${weather.day[index]["condition"]["icon"]}",
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                )
+              ],
             ),
           ],
         ),
