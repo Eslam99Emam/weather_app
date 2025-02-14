@@ -1,5 +1,18 @@
 {
     "cSpell.words": [
-        "Errorscreen"
+        "accesslocation",
+        "avgtemp",
+        "Errorscreen",
+        "forecastday",
+        "formated",
+        "geolocator",
+        "getcoordinates",
+        "getlocationbyname",
+        "Locationbycoordinates",
+        "placemarks",
+        "riverpod",
+        "screenutil",
+        "tempreture",
+        "Usecase"
     ]
 }

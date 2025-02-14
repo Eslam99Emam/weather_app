@@ -3,6 +3,7 @@
 import 'package:country_state_city/country_state_city.dart' hide State;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/init_Provider.dart';
 
 class CountriesScreen extends ConsumerStatefulWidget {
@@ -39,7 +40,7 @@ class _CountriesscreeSState extends ConsumerState<CountriesScreen> {
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            width: 0.3,
+                            width: 0.3.w,
                           ),
                         ),
                       ),
@@ -64,12 +65,6 @@ class _CountriesscreeSState extends ConsumerState<CountriesScreen> {
                         ),
                       ),
                     ),
-                    // Divider(
-                    //   color: Colors.grey.shade500,
-                    //   thickness: 0.5,
-                    //   indent: 0,
-                    //   endIndent: 0,
-                    // ),
                   ],
                 );
               },

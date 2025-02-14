@@ -1,5 +1,6 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/Location_Providing_Notifiers.dart';
@@ -17,7 +18,6 @@ import 'Coordinates_Providing_Notifiers.dart';
 class InitProvider extends FamilyAsyncNotifier<(Weather, Location), String?> {
   @override
   FutureOr<(Weather, Location)> build(String? country) async {
-    log("InitProvider");
     Coordinates coordinates = await ref.read(coordinatesProvider.future);
     Location location = await ref.read(locationProvider(
             LocationNotifierParams(ref.read(coordinatesProvidingNotifier)!, country))

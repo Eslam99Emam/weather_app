@@ -1,9 +1,8 @@
-// ignore_for_file: sort_child_properties_last
-
-import 'dart:developer';
+// ignore_for_file: sort_child_properties_last, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/Location_Providing_Notifiers.dart';
 import 'package:weather_app/feature/weather_display/presentation/providers/Weather_Providing_Notifiers.dart';
@@ -43,11 +42,8 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
 
   @override
   Widget build(BuildContext context) {
-    log("Weather Screen");
     var location = ref.watch(locationProvidingNotifier);
-    log("${location!.location.country}");
     var weather = ref.watch(weatherProvidingNotifier);
-    log("${weather!.tempreture} ${weather.image}");
 
     String format_date(String date) {
       int hour = int.parse(date.split(":")[0]);
@@ -61,7 +57,6 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(700),
         child: Container(
-          // color: Colors.amber,
           child: GestureDetector(
             onTap: () {
               Navigator.push(
@@ -72,7 +67,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                       CountriesScreen(),
                   transitionsBuilder:
                       (context, animation, secondaryAnimation, child) {
-                    const begin = Offset(0.0, -1.0); // Slide in from the right
+                    const begin = Offset(0.0, -1.0); // Slide in from the top
                     const end = Offset.zero; // End at the center
                     const curve = Curves.easeInOut;
 
@@ -97,7 +92,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                 children: [
                   Expanded(child: SizedBox()),
                   Text(
-                    "${location.location.country}",
+                    "${location?.location.country}",
                     style: Theme.of(context).textTheme.headlineLarge!.apply(
                       shadows: [
                         Shadow(
@@ -108,7 +103,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                   ),
                   Icon(
                     Icons.arrow_drop_down,
-                    size: 36,
+                    size: 36.sp,
                     shadows: [
                       Shadow(
                         blurRadius: 2.0,
@@ -130,19 +125,17 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
           children: [
             Positioned(
               child: Lottie.asset("assets/Background.json",
-                  height: 400, width: 400),
+                  height: 400.h, width: 400.w),
               top: 140,
               left: 40,
             ),
             Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      "${weather.tempreture}°C",
+                      "${weather?.tempreture}°C",
                       style: Theme.of(context).textTheme.displayLarge!.apply(
                         color: const Color(0xFFf8c907),
                         shadows: [
@@ -156,7 +149,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                     Padding(
                       padding: const EdgeInsets.only(left: 4.0),
                       child: Text(
-                        "Today avg in ${location.location.country}",
+                        "Today avg in ${location?.location.country}",
                         style: Theme.of(context).textTheme.titleLarge!.apply(
                           shadows: [
                             Shadow(
@@ -167,7 +160,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                       ),
                     ),
                     SizedBox(
-                      height: 15,
+                      height: 15.h,
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -177,7 +170,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                           child: ScaleTransition(
                             scale: _scaleAnimation,
                             child: Image.network(
-                              "https:${weather.image}",
+                              "https:${weather?.image}",
                             ),
                           ),
                         ),
@@ -187,17 +180,16 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                 ),
                 Expanded(child: SizedBox()),
                 SizedBox(
-                  height: 170,
+                  height: 170.h,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: weather.day.length,
+                    itemCount: weather?.day.length,
                     itemBuilder: (context, index) {
                       return Container(
                         margin: EdgeInsets.all(12.0),
                         padding: EdgeInsets.symmetric(
                             vertical: 4.0, horizontal: 16.0),
                         decoration: BoxDecoration(
-                            // color: Colors.grey.withAlpha(100),
                             gradient: RadialGradient(colors: [
                               Color(0xAAcff0f3),
                               Color(0xFF40c4ce),
@@ -214,31 +206,20 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              format_date((weather.day[index]["time"] as String)
-                                  .split(" ")[1]),
-                              style:
-                                  Theme.of(context).textTheme.bodyLarge!.apply(
-                                        fontSizeDelta: 2,
-                                        fontWeightDelta: 1,
-                                        color: Colors.black,
-                                      ),
+                              format_date(
+                                  (weather?.day[index]["time"] as String)
+                                      .split(" ")[1]),
+                              style: Theme.of(context).textTheme.titleMedium,
                             ),
                             SizedBox(
                               height: 10,
                             ),
                             Text(
-                              "${weather.day[index]["temp_c"]}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .apply(
-                                    fontSizeDelta: 3,
-                                    fontWeightDelta: 1,
-                                    color: Colors.black,
-                                  ),
+                              "${weather?.day[index]["temp_c"]}",
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                             Image.network(
-                              "https:${weather.day[index]["condition"]["icon"]}",
+                              "https:${weather?.day[index]["condition"]["icon"]}",
                             ),
                           ],
                         ),
@@ -247,7 +228,7 @@ class _WeatherScreenState extends ConsumerState<WeatherScreen>
                   ),
                 ),
                 SizedBox(
-                  height: 20,
+                  height: 20.h,
                 )
               ],
             ),

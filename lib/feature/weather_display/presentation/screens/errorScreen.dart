@@ -14,6 +14,7 @@ class Errorscreen extends StatelessWidget {
       key: ValueKey("error"),
       body: Center(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               "Error",
